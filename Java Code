@@ -1,0 +1,116 @@
+//Cole Constantino | Iterate through 2D array returning list of its Integers in a clockwise spiral rotation
+//Solution is done with my own custom Data Structure, named GridNode
+import java.util.*;
+public class SpiralMatrix{
+  public static List<Integer> spiral(int[][] grid){
+    if(grid.length < 1) return new ArrayList<>();
+    int r = grid.length, c = grid[0].length;
+    //seen means 1 not seen means 0
+    int[][] seen = new int[r][c];
+    GridNode node = new GridNode(grid, seen);
+    seen[0][0] = 1;
+    node.list.add(grid[0][0]);
+    int count = 0;
+    
+    //shift/iterate in a direction as far as possible and repeat until every element is visited 
+    while(true){
+      node = shiftRight(node);
+      count++; 
+      if(count == r*c) break;
+      node = shiftDown(node);
+      count++; 
+      if(count == r*c) break;
+      node = shiftLeft(node);
+      count++; 
+      if(count == r*c) break;
+      node = shiftUp(node);
+      if(count == r*c) break;
+    }
+    return node.list;
+  }
+  
+  //iterate right until end of Array or a visited spot is the next element
+  public static GridNode shiftRight(GridNode node){
+    int i = node.colI;
+    while(i < node.grid[0].length -1 && node.seen[node.rowI][i + 1] == 0){
+      i++;
+      node.list.add(node.grid[node.rowI][i]);
+      node.seen[node.rowI][i] = 1;
+    }
+    node.colI = i;
+    return node;  
+  }
+  
+  //iterate down until end of Array or a visited spot is the next element
+  public static GridNode shiftDown(GridNode node){
+    int i = node.rowI;
+    while(i < node.grid.length -1 && node.seen[i + 1][node.colI] == 0){
+      i++;
+      node.list.add(node.grid[i][node.colI]);
+      node.seen[i][node.colI] = 1;
+    }
+    node.rowI = i;
+    return node;  
+  }
+  //iterate left until end of Array or visited spot is the next element
+  public static GridNode shiftLeft(GridNode node){
+    int i = node.colI;
+    while(i > 0 && node.seen[node.rowI][i-1] == 0){
+      i--;
+      node.list.add(node.grid[node.rowI][i]);
+      node.seen[node.rowI][i] = 1;
+    }
+    node.colI = i;
+    return node;  
+  }
+  
+  //iterate up until end of Array or visited spot is the next element
+  public static GridNode shiftUp(GridNode node){
+    int i = node.rowI;
+    while(i > 0 && node.seen[i-1][node.colI] == 0){
+      i--;
+      node.list.add(node.grid[i][node.colI]);
+      node.seen[i][node.colI] = 1;
+      
+    }
+    node.rowI = i;
+    return node;  
+  }
+  
+  
+  //main method and test cases
+  public static void main(String[] args){ 
+    int[][] test1 = {
+      {1,2,3,4},
+      {10,11,12,5},
+      {9,8,7,6}   
+    };
+    int[][] test2 = {
+      {1,2},
+      {10,3},
+      {9,4},
+      {8,5},
+      {7,6},
+    };
+    int[][] test3 = {{1},{2},{3}};
+    System.out.println("Test 1 [4x4 Matrix] " + spiral(test1));
+    System.out.println("Test 2 [5x2 Matrix] " + spiral(test2));
+    System.out.println("Test 3 [1x1 Matrix] " + spiral(test3));
+  }
+  
+  //Custom Data Structure Class to store information
+  public static class GridNode{
+    int rowI;
+    int colI;
+    int[][] grid;
+    int[][] seen;
+    List<Integer> list = new ArrayList<>(); 
+    public GridNode(int[][] grid, int[][] seen){
+      this.grid = grid;
+      this.seen = seen;
+      this.list = list;
+      rowI = 0;
+      colI = 0;
+    }
+  }
+}
